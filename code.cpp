@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<windows.h>
 #include<GL/glut.h>
-#define MAX 100	    // Number of random values in the sample
+#define MAX 600	    // Number of random values in the sample
 #include <unistd.h>  // for a small delay to visualise
 
 int a[MAX];			// Sample Array
