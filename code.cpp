@@ -12,7 +12,6 @@ int dirflag=0;		// For Ripple Sort
 int count=1;		// For Ripple Sort
 int sort_no=0;      // Order -> Insertion, Selection, Bubble, Ripple, Heap
 
-
 void initialize()
 {
     // make random nos 0 to 199
@@ -74,9 +73,7 @@ void insertionsort()
 	}
 	sort_no++;
     initialize();
-
-	A:
-	i=j=0;
+	A: i=j=0;
 }
 
 int notsorted(){
@@ -251,11 +248,8 @@ void heapSort()
     for (i = 0; i < MAX; i++)
        printf("\t %d", a[i]);
     exit(0);
-	A:  printf("");
-
+    A:  printf("");
 }
-
-
 
 void makedelay(int)
 {
@@ -266,12 +260,10 @@ void makedelay(int)
         case 2: bubblesort();	    break;
         case 3: ripplesort();		break;
         case 4: heapSort();		    break;
-
     }
     glutPostRedisplay();
 	glutTimerFunc(5,makedelay,1);
 }
-
 
 int main(int argc,char **argv)
 {
