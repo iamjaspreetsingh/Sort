@@ -2,14 +2,15 @@
 #include<stdlib.h>
 #include<windows.h>
 #include<GL/glut.h>
-#define MAX 200		// Number of random values in the sample
+#define MAX 100	    // Number of random values in the sample
+#include <unistd.h>  // for a small delay to visualise
+
 int a[MAX];			// Sample Array
 int i=0,j=0;
 int flag=0;			// For Insertion Sort
 int dirflag=0;		// For Ripple Sort
 int count=1;		// For Ripple Sort
-int sort_no=0;      // Insertion, Selection, Bubble, Ripple, Heap
-int n; //for heap sort
+int sort_no=0;      // Order -> Insertion, Selection, Bubble, Ripple, Heap
 
 
 void initialize()
@@ -20,8 +21,6 @@ void initialize()
 		printf("%d ",a[i]);
 	}
 
-	int n = sizeof(a)/sizeof(a[0]); //for heap sort
-
     //define 2d shape
 	glClearColor(1,1,1,1);
 	glMatrixMode(GL_PROJECTION);
@@ -30,12 +29,14 @@ void initialize()
 }
 
 
+
 void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
+
     for(int i=0;i<MAX;i++)
     {
-        glColor3f(1,0,0);
+        glColor3f(0,0,1);
         glBegin(GL_LINE_LOOP);
         // making vertices of rectangle dividing screen equally
         glVertex2f(10+(700/(MAX+1))*i,50);
@@ -63,7 +64,6 @@ void insertionsort()
 				temp=a[j];
 				a[j]=a[j+1];
 				a[j+1]=temp;
-
 				goto A;
 			}
 			j++;
@@ -119,11 +119,13 @@ void selectionsort()
 				goto A;
 			}
 			i++;
+		usleep(1000);
 		}
 	}
     sort_no ++;
     initialize();
 	i=j=0;
+	// for display
 	A:  printf("");
 }
 
@@ -200,57 +202,54 @@ void ripplesort()
 	A: printf("");
 }
 
-void heapify(int n, int k)
-{
-    int largest = k; // Initialize largest as root
-    int l = 2*k + 1; // left = 2*i + 1
-    int r = 2*k + 2; // right = 2*i + 2
-
-    // If left child is larger than root
-    if (l < n && a[l] > a[largest])
-        largest = l;
-
-    // If right child is larger than largest so far
-    if (r < n && a[r] > a[largest])
-        largest = r;
-
-    // If largest is not root
-    if (largest != k)
-    {
-        // swap a[k] a[largest]
-        printf("swap %d and %d\n",a[k],a[largest]);
-        int temp = a[i];
-        a[i] = a[largest];
-        a[largest] = temp;
-        // Recursively heapify the affected sub-tree
-        heapify( n, largest);
-        goto A;
-    }
-    A:  printf("");
-}
-
 // main function to do heap sort
 void heapSort()
 {
+    int root,c;
     printf("heap sort");
-
-    // Build heap (rearrange array)
-    for (int i = n / 2 - 1; i >= 0; i--)
-        heapify( n, i);
-
-    // One by one extract an element from heap
-    for ( i=n-1; i>=0; i--)
+    for (int i = 1; i < MAX+1; i++)
     {
-        // Move current root to end
-        //swap(a[0], a[i]);
-        int temp = a[0];
-        a[0] = a[i];
-        a[i] = temp;
-        // call max heapify on the reduced heap
-        heapify( i, 0);
-        goto A;
+         c = i;
+        do
+        {
+            root = (c - 1) / 2;
+            if (a[root] < a[c])   /* to create MAX heap array */
+            {
+                int temp = a[root];
+                a[root] = a[c];
+                a[c] = temp;
 
+            }
+            c = root;
+        } while (c != 0);
+        display();
     }
+
+    for (int j = MAX -1 ; j >= 0; j--)
+    {
+        int temp = a[0];
+        a[0] = a[j];   /* swap max element with rightmost leaf element */
+        a[j] = temp;
+        root = 0;
+        do
+        {
+            c = 2 * root + 1;    /* left node of root element */
+            if ((a[c] < a[c + 1]) && c < j-1)
+                c++;
+            if (a[root]<a[c] && c<j)    /* again rearrange to max heap array */
+            {
+                temp = a[root];
+                a[root] = a[c];
+                a[c] = temp;
+            }
+            root = c;
+        } while (c < j);
+    usleep(6000);
+    display();
+    }
+    printf("\n The sorted array is : ");
+    for (i = 0; i < MAX; i++)
+       printf("\t %d", a[i]);
     exit(0);
 	A:  printf("");
 
@@ -262,11 +261,11 @@ void makedelay(int)
 {
     switch(sort_no)
     {
-        case 5: insertionsort();	break;
+        case 0: insertionsort();	break;
         case 1:	selectionsort();	break;
         case 2: bubblesort();	    break;
         case 3: ripplesort();		break;
-        case 0: heapSort();		    break;
+        case 4: heapSort();		    break;
 
     }
     glutPostRedisplay();
